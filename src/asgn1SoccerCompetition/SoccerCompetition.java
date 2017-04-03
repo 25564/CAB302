@@ -4,9 +4,11 @@
 package asgn1SoccerCompetition;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import asgn1Exceptions.CompetitionException;
 import asgn1Exceptions.LeagueException;
+import asgn1Exceptions.TeamException;
 
 /**
  * A class to model a soccer competition. The competition contains one or more number of leagues, 
@@ -22,6 +24,7 @@ import asgn1Exceptions.LeagueException;
 public class SoccerCompetition implements SportsCompetition{
 	
 	String name;
+	protected ArrayList<SoccerLeague> LeagueList;
 	
 	/**
 	 * Creates the model for a new soccer competition with a specific name,
@@ -33,8 +36,11 @@ public class SoccerCompetition implements SportsCompetition{
 	 */
 	public SoccerCompetition(String name, int numLeagues, int numTeams){
 		this.name = name;
-
-		// TO DO Complete 
+		this.LeagueList = new ArrayList<SoccerLeague>();
+		
+		for(int i = 0; i < numLeagues; i++) {
+			this.LeagueList.add(new SoccerLeague(numTeams));
+		}
 	}
 	
 	/**
@@ -47,9 +53,11 @@ public class SoccerCompetition implements SportsCompetition{
 	 *  or equal to or greater than the number of leagues in the competition.
 	 */
 	public SoccerLeague getLeague(int leagueNum) throws CompetitionException{
-
-		// TO DO
+		if (this.LeagueList.size() - 1 < leagueNum) {
+			throw new CompetitionException("Cannot Retrieve non existant League");
+		}
 		
+		return this.LeagueList.get(leagueNum);
 	}
 	
 
@@ -57,9 +65,13 @@ public class SoccerCompetition implements SportsCompetition{
 	 * Starts a new soccer season for each league in the competition.
 	 */
 	public void startSeason() {
-
-		// TO DO
-
+		for (SoccerLeague League: this.LeagueList) {
+			try {
+				League.startNewSeason();
+			} catch (LeagueException e) {
+			    System.err.println("Caught League Exception when trying to start season: " + e.getMessage());
+			}
+		}
 	}
 
 	
@@ -69,10 +81,46 @@ public class SoccerCompetition implements SportsCompetition{
 	 * and relegation between the leagues.  
 	 * 
 	 */
-	public void endSeason()  {
+	public void endSeason()  {		
+		ArrayList<ArrayList<SoccerTeam>> TransitionLeagueList = new ArrayList<ArrayList<SoccerTeam>>();
 
-		// TO DO
-
+		for (SoccerLeague League: this.LeagueList) {	
+			TransitionLeagueList.add(new ArrayList<SoccerTeam>());
+			
+			try {
+				League.endSeason();
+			} catch (LeagueException e) {
+			    System.err.println("Caught League Exception when trying to end season: " + e.getMessage());
+			}
+		}
+				
+		for(int i = 0; i < (this.LeagueList.size()); i++) {
+			try {
+				if (i > 0) {
+					SoccerTeam TopTeam = this.LeagueList.get(i).getTopTeam();
+					this.LeagueList.get(i).removeTeam(TopTeam);
+					TransitionLeagueList.get(i - 1).add(TopTeam);
+				}
+				
+				if (i < (this.LeagueList.size() - 1)) {
+					SoccerTeam BottomTeam = this.LeagueList.get(i).getBottomTeam();	
+					this.LeagueList.get(i).removeTeam(BottomTeam);
+					TransitionLeagueList.get(i + 1).add(BottomTeam);
+				}
+			} catch (LeagueException e) {
+			    System.err.println("Caught League Exception while isolating top and bottom team: " + e.getMessage());
+			}
+		}
+		
+		for(int i = 0; i < (TransitionLeagueList.size()); i++) {
+			for (SoccerTeam team: TransitionLeagueList.get(i)) {
+				try {
+					this.LeagueList.get(i).registerTeam(team);
+				} catch (LeagueException e) {
+				    System.err.println("Caught League Exception while re-registering teams in new leagues " + e.getMessage());
+				}
+			}
+		}
 	}
 
 	/** 
@@ -81,11 +129,12 @@ public class SoccerCompetition implements SportsCompetition{
 	public void displayCompetitionStandings(){
 		System.out.println("+++++" + this.name + "+++++");
 		
-		// TO DO (optional)
-		// HINT The heading for each league is
-		//	System.out.println("---- League" + (i +1) + " ----");
-		//  System.out.println("Official Name" +  '\t' +  "Nick Name" + '\t' + "Form" + '\t' +  "Played" + '\t' + "Won" + '\t' + "Lost" + '\t' + "Drawn" + '\t' + "For" + '\t' + "Against" + '\t' + "GlDiff" + '\t' + "Points");
+		int i = 0;
+		for(SoccerLeague League: this.LeagueList) {
+			System.out.println("---- League" + (i +1) + " ----");
+			System.out.println("Official Name" +  '\t' +  "Nick Name" + '\t' + "Form" + '\t' +  "Played" + '\t' + "Won" + '\t' + "Lost" + '\t' + "Drawn" + '\t' + "For" + '\t' + "Against" + '\t' + "GlDiff" + '\t' + "Points");
+			League.displayLeagueTable();
+			i++;
+		}
 	}
-	
-
 }

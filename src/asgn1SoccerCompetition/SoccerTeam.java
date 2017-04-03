@@ -41,7 +41,13 @@ public class SoccerTeam implements SportsTeam, Comparable<SoccerTeam>{
 	 */
 	public SoccerTeam(String official, String nick) throws TeamException{
 		
-		// TO DO: ADD TESTS FOR EXCEPTIONS
+		if (official == "") {
+			throw new TeamException("Team name cannot be an empty string");
+		}
+		
+		if (nick == "") {
+			throw new TeamException("Nickname cannot be an empty string");
+		}
 		
 		this.officialName = official;
 		this.nickName = nick;
@@ -156,9 +162,28 @@ public class SoccerTeam implements SportsTeam, Comparable<SoccerTeam>{
 	 * @throws TeamException If the number of goals scored or conceded is an unrealistic number (less than 0 or greater than 20).
 	 */
 	public void playMatch(int goalsFor, int goalsAgainst) throws TeamException{
-
-		// TO DO
+					
+		if (goalsFor < 0 || goalsAgainst < 0) {
+			throw new TeamException("Cannot score a negative value");
+		} else if (goalsFor > 20 || goalsAgainst > 20) {
+			throw new TeamException("Score Too High. Upper limit 20 points for our against");
+		}
 		
+		this.goalsConcededSeason += goalsAgainst;
+		this.goalsScoredSeason += goalsFor; 
+		
+		if (goalsFor > goalsAgainst) { // This Team won
+			this.matchesWon += 1;
+			this.competitionPoints += 3;
+			this.form.addResultToForm(WLD.WIN);
+		} else if (goalsFor < goalsAgainst) { // This Team lost
+			this.matchesLost += 1;	
+			this.form.addResultToForm(WLD.LOSS);
+		} else { // Draw
+			this.matchesDrawn += 1;	
+			this.competitionPoints += 1;
+			this.form.addResultToForm(WLD.DRAW);
+		}		
 	}	
 	
 	/**
@@ -183,8 +208,6 @@ public class SoccerTeam implements SportsTeam, Comparable<SoccerTeam>{
 				return this.officialName.compareTo(other.officialName);
 			} return (other.getGoalDifference()) - (this.getGoalDifference());
 		} else return other.competitionPoints -  this.competitionPoints;
-		
-		
 	}
 	
 		
@@ -199,7 +222,6 @@ public class SoccerTeam implements SportsTeam, Comparable<SoccerTeam>{
 		this.matchesDrawn = 0;
 		this.competitionPoints = 0;	
 		form.resetForm();
-
 	}
 
 }

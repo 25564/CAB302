@@ -18,10 +18,10 @@ import asgn1SportsUtils.WLD;
  *
  */
 public class SportsTeamForm {
-
+	
 	// The number of recent games to show as the recent form of the team
 	private static final int maxLength = 5;
-
+	private LinkedList<WLD> GamesList;
 
 	/**
 	 * Constructs the data structure that holds the match results (win, loss, draw) for recent matches.
@@ -29,8 +29,7 @@ public class SportsTeamForm {
 	 * 
 	 */
 	public SportsTeamForm() {
-		// TODO
-		
+		this.GamesList = new LinkedList<WLD>();
 	}
 	
 	/**
@@ -44,8 +43,7 @@ public class SportsTeamForm {
 	 *
 	 */
 	public void addResultToForm(WLD result){ 
-		// TODO
-		
+		this.GamesList.addFirst(result);
 	}
 	
 	/**
@@ -60,7 +58,18 @@ public class SportsTeamForm {
 	 * @return A string representing the results of recent matches.
 	 */
 	public String toString(){
-		// TO DO
+		String ReturnString = "";
+		int NumberMatches = this.getNumGames();
+		
+		for(int i=0; i<SportsTeamForm.maxLength; i++){
+			if (NumberMatches > i) {
+				ReturnString += this.GamesList.get(i).getChar();
+				continue;
+			}
+			ReturnString += '-';
+		}
+		
+		return ReturnString;
 	}
 	
 	
@@ -70,14 +79,13 @@ public class SportsTeamForm {
 	 * @return The number of games played. 
 	 */
 	public int getNumGames(){
-		// TO DO
+		return this.GamesList.size();
 	}
 	
 	/**
 	 * Resets the data structure to its initial values.
 	 */
 	public void resetForm(){
-		// TO DO
+		this.GamesList = new LinkedList<WLD>();
 	}
-	
 }
