@@ -41,11 +41,11 @@ public class SoccerTeam implements SportsTeam, Comparable<SoccerTeam>{
 	 */
 	public SoccerTeam(String official, String nick) throws TeamException{
 		
-		if (official == "") {
+		if (official.trim().length() == 0) {
 			throw new TeamException("Team name cannot be an empty string");
 		}
 		
-		if (nick == "") {
+		if (nick.trim().length() == 0) {
 			throw new TeamException("Nickname cannot be an empty string");
 		}
 		

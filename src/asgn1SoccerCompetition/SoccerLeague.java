@@ -215,7 +215,7 @@ public class SoccerLeague implements SportsLeague{
 	public SoccerTeam getTopTeam() throws LeagueException{
 		sortTeams();
 		
-		if (this.SortedTeams.size() < this.requiredTeams || this.SortedTeams.size() == 0) {
+		if (this.getRegisteredNumTeams() != this.getRequiredNumTeams() || this.SortedTeams.size() == 0) {
 			throw new LeagueException("Not enough teams in league");
 		}
 		
@@ -231,7 +231,7 @@ public class SoccerLeague implements SportsLeague{
 	public SoccerTeam getBottomTeam() throws LeagueException{
 		sortTeams();
 		
-		if (this.SortedTeams.size() < this.requiredTeams || this.SortedTeams.size() == 0) {
+		if (this.getRegisteredNumTeams() != this.getRequiredNumTeams() || this.SortedTeams.size() == 0) {
 			throw new LeagueException("Not enough teams in league");
 		}
 		

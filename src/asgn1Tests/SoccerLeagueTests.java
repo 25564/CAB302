@@ -19,11 +19,20 @@ import asgn1SoccerCompetition.SoccerTeam;
  * @author Alan Woodley
  *
  */
+
 public class SoccerLeagueTests {
     @Rule
     public ExpectedException thrown= ExpectedException.none();
     
-	@Test
+    public void testConstructor() {
+		SoccerLeague LeagueA = new SoccerLeague(24);
+		SoccerLeague LeagueB = new SoccerLeague(9);
+		
+		assertEquals(24, LeagueA.getRequiredNumTeams());
+		assertEquals(9, LeagueB.getRequiredNumTeams());		
+	}
+    
+	@Test 
     public void TestRegisterTeam() { 
 		SoccerLeague League = new SoccerLeague(2);
 		try {
@@ -37,10 +46,8 @@ public class SoccerLeagueTests {
 		}
 	}
 	
-	@Test
+	@Test (expected = LeagueException.class)
     public void TestRegisterDuplicateTeam() throws LeagueException { 
-		thrown.expect(LeagueException.class);
-		thrown.expectMessage("Ducks is not an available name");
 		
 		SoccerLeague League = new SoccerLeague(2);
 		try {
@@ -53,11 +60,9 @@ public class SoccerLeagueTests {
 		}
 	}
 	
-	@Test
+	@Test (expected = LeagueException.class)
     public void TestRegisterTooManyTeams() throws LeagueException {
-		thrown.expect(LeagueException.class);
-		thrown.expectMessage("Too many teams in league");
-		
+	
 		SoccerLeague League = new SoccerLeague(2);
 		try {
 			SoccerTeam TeamA = new SoccerTeam("Ducks", "Birds");
@@ -73,11 +78,9 @@ public class SoccerLeagueTests {
 		}
 	}
 	
-	@Test
+	@Test (expected = LeagueException.class)
     public void AttemptToAddTeamDuringSeason() throws LeagueException { 
-		thrown.expect(LeagueException.class);
-		thrown.expectMessage("Cannot add team while season is active");
- 
+
 		SoccerLeague League = new SoccerLeague(2);
 		try {
 			SoccerTeam TeamA = new SoccerTeam("Ducks", "Birds");
@@ -119,11 +122,9 @@ public class SoccerLeagueTests {
 		}
 	}
 	
-	@Test
+	@Test (expected = LeagueException.class)
     public void TestAttemptToRemoveTeamDuringSeason() throws LeagueException { 
-		thrown.expect(LeagueException.class);
-		thrown.expectMessage("Cannot remove team while season is active");
- 
+	
 		SoccerLeague League = new SoccerLeague(2);
 		try {
 			SoccerTeam TeamA = new SoccerTeam("Ducks", "Birds");
@@ -140,11 +141,8 @@ public class SoccerLeagueTests {
 		}
 	}
 	
-	@Test
+	@Test (expected = LeagueException.class)
     public void TestAttemptToRemoveNonExistantTeam() throws LeagueException { 
-		thrown.expect(LeagueException.class);
-		thrown.expectMessage("Cannot remove non existant team");
- 
 		SoccerLeague League = new SoccerLeague(2);
 		try {
 			SoccerTeam TeamA = new SoccerTeam("Ducks", "Birds");
@@ -211,11 +209,9 @@ public class SoccerLeagueTests {
 	    assertEquals(18, LeagueC.getRequiredNumTeams());
 	}
 	
-	@Test
+	@Test (expected = LeagueException.class)
     public void TestStartingSeason() throws LeagueException {
-		thrown.expect(LeagueException.class);
-		thrown.expectMessage("Cannot add team while season is active");
-		
+
 		SoccerLeague League = new SoccerLeague(3);
 		
 		try {
@@ -238,11 +234,8 @@ public class SoccerLeagueTests {
 		}
 	}
 	
-	@Test
+	@Test (expected = LeagueException.class)
     public void TestStartingSeasonWhileActive() throws LeagueException {
-		thrown.expect(LeagueException.class);
-		thrown.expectMessage("League is already in season");
-		
 		SoccerLeague League = new SoccerLeague(2);
 		
 		try {
@@ -262,11 +255,9 @@ public class SoccerLeagueTests {
 		}
 	}
 	
-	@Test
+	@Test (expected = LeagueException.class)
     public void TestStartingTeamWithoutEnoughTeams() throws LeagueException {
-		thrown.expect(LeagueException.class);
-		thrown.expectMessage("Not Enough Teams");
-		
+	
 		SoccerLeague League = new SoccerLeague(2);
 		
 		try {
@@ -333,11 +324,9 @@ public class SoccerLeagueTests {
 		}
 	}
 	
-	@Test
+	@Test (expected = LeagueException.class)
     public void TestEndingSeasonThatHasntStarted() throws LeagueException {	
-		thrown.expect(LeagueException.class);
-		thrown.expectMessage("League is not in season");
-		
+
 		SoccerLeague League = new SoccerLeague(2);
 		
 		try {
@@ -372,11 +361,9 @@ public class SoccerLeagueTests {
 		}
 	}
 	
-	@Test
+	@Test (expected = LeagueException.class)
     public void TestGetTeamByNameThatDoesntExist() throws LeagueException {	
-		thrown.expect(LeagueException.class);
-		thrown.expectMessage("League does not have a Team by the name FakeTeam");
-		
+
 		SoccerLeague League = new SoccerLeague(2);
 		
 		try {
@@ -415,10 +402,8 @@ public class SoccerLeagueTests {
 		}
 	}
 	
-	@Test
+	@Test (expected = LeagueException.class)
     public void TestTeamPlayingItself() throws LeagueException {	
-		thrown.expect(LeagueException.class);
-		thrown.expectMessage("Team cannot play itself");
 		
 		SoccerLeague League = new SoccerLeague(2);
 		
@@ -437,10 +422,8 @@ public class SoccerLeagueTests {
 		}
 	}
 	
-	@Test
+	@Test(expected = LeagueException.class)
     public void TestTryingToPlayGameInOffSeason() throws LeagueException {	
-		thrown.expect(LeagueException.class);
-		thrown.expectMessage("Cannot play match prior to season start");
 		
 		SoccerLeague League = new SoccerLeague(2);
 		
@@ -457,10 +440,8 @@ public class SoccerLeagueTests {
 		}
 	}
 	
-	@Test
+	@Test(expected = LeagueException.class)
     public void TestPlayingANonExistantTeam() throws LeagueException {	
-		thrown.expect(LeagueException.class);
-		thrown.expectMessage("Both teams must exist in the same league to play eachother");
 		
 		SoccerLeague League = new SoccerLeague(2);
 		
@@ -479,10 +460,8 @@ public class SoccerLeagueTests {
 		}
 	}
 	
-	@Test
+	@Test(expected = LeagueException.class)
     public void TestPlayingBothTeamsNotExisting() throws LeagueException {	
-		thrown.expect(LeagueException.class);
-		thrown.expectMessage("Both teams must exist in the same league to play eachother");
 		
 		SoccerLeague League = new SoccerLeague(2);
 		
@@ -531,21 +510,31 @@ public class SoccerLeagueTests {
 		}
 	}
 	
-	@Test
-    public void TestGetBottomTeamWithNoTeams() throws LeagueException {	
-		thrown.expect(LeagueException.class);
-		thrown.expectMessage("Not enough teams in league");
+	@Test (expected = LeagueException.class)
+	public void TestGetTopTeamWithNoTeamsOffSeason() throws LeagueException {
 		
+		SoccerLeague League = new SoccerLeague(2);
+		League.getTopTeam();
+	}
+	
+	@Test (expected = LeagueException.class)
+	public void TestGetBottomTeamWithNoTeamsOffSeason() throws LeagueException {
+	
+		SoccerLeague League = new SoccerLeague(2);
+		League.getBottomTeam();
+	}
+	
+	@Test (expected = LeagueException.class)
+    public void TestGetBottomTeamWithNoTeamsOnSeason() throws LeagueException {	
+	
 		SoccerLeague League = new SoccerLeague(0);
 		
 		League.startNewSeason();
 		League.getBottomTeam();
 	}
 	
-	@Test
-    public void TestGetTopTeamWithNoTeams() throws LeagueException {	
-		thrown.expect(LeagueException.class);
-		thrown.expectMessage("Not enough teams in league");
+	@Test (expected = LeagueException.class)
+    public void TestGetTopTeamWithNoTeamsOnSeason() throws LeagueException {	
 		
 		SoccerLeague League = new SoccerLeague(0);
 		

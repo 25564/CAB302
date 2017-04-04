@@ -86,7 +86,7 @@ public class SoccerCompetition implements SportsCompetition{
 
 		for (SoccerLeague League: this.LeagueList) {	
 			TransitionLeagueList.add(new ArrayList<SoccerTeam>());
-			
+
 			try {
 				League.endSeason();
 			} catch (LeagueException e) {
@@ -94,31 +94,47 @@ public class SoccerCompetition implements SportsCompetition{
 			}
 		}
 				
-		for(int i = 0; i < (this.LeagueList.size()); i++) {
+		for(int i = 0; i < (this.LeagueList.size()); i++) {	
 			try {
 				if (i > 0) {
 					SoccerTeam TopTeam = this.LeagueList.get(i).getTopTeam();
-					this.LeagueList.get(i).removeTeam(TopTeam);
-					TransitionLeagueList.get(i - 1).add(TopTeam);
-				}
-				
-				if (i < (this.LeagueList.size() - 1)) {
-					SoccerTeam BottomTeam = this.LeagueList.get(i).getBottomTeam();	
-					this.LeagueList.get(i).removeTeam(BottomTeam);
-					TransitionLeagueList.get(i + 1).add(BottomTeam);
+					TransitionLeagueList.get(i).add(TopTeam);
 				}
 			} catch (LeagueException e) {
-			    System.err.println("Caught League Exception while isolating top and bottom team: " + e.getMessage());
+			    System.err.println("Caught League Exception while isolating top team: " + e.getMessage() + " League: " + i );
+			}
+			
+			try {
+				if (i < (this.LeagueList.size() - 1)) {
+					SoccerTeam BottomTeam = this.LeagueList.get(i).getBottomTeam();	
+					TransitionLeagueList.get(i).add(BottomTeam);
+				}
+			} catch (LeagueException e) {
+			    System.err.println("Caught League Exception while isolating bottom team: " + e.getMessage() + " League: " + i );
 			}
 		}
 		
-		for(int i = 0; i < (TransitionLeagueList.size()); i++) {
-			for (SoccerTeam team: TransitionLeagueList.get(i)) {
-				try {
-					this.LeagueList.get(i).registerTeam(team);
-				} catch (LeagueException e) {
-				    System.err.println("Caught League Exception while re-registering teams in new leagues " + e.getMessage());
+		for(int LeagueIndex = 0; LeagueIndex < (TransitionLeagueList.size()); LeagueIndex++) {
+			try {
+				if (LeagueIndex < (this.LeagueList.size() - 1)) { // Check not last League
+
+					try {
+						this.getLeague(LeagueIndex).removeTeam(TransitionLeagueList.get(LeagueIndex).get(0));
+						this.getLeague(LeagueIndex + 1).removeTeam(TransitionLeagueList.get(LeagueIndex + 1).get(0));
+
+						this.getLeague(LeagueIndex).registerTeam(TransitionLeagueList.get(LeagueIndex + 1).get(0));
+						this.getLeague(LeagueIndex + 1).registerTeam(TransitionLeagueList.get(LeagueIndex).get(0));
+					} catch (CompetitionException e) {
+					    System.err.println("Caught Competition League Exception while re-registering teams in new leagues " + e.getMessage());
+						e.printStackTrace();
+					}
+					
+					TransitionLeagueList.get(LeagueIndex).remove(0);
+					TransitionLeagueList.get(LeagueIndex + 1).remove(0);
 				}
+			} catch (LeagueException e) {
+			    System.err.println("Caught League Exception while re-registering teams in new leagues " + e.getMessage());
+				e.printStackTrace();
 			}
 		}
 	}

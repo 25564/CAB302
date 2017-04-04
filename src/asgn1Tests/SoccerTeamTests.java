@@ -36,6 +36,11 @@ public class SoccerTeamTests {
     public void BlankNameTest() throws TeamException { 
 		SoccerTeam SoccerTeam = new SoccerTeam("", "test");			
 	}
+	
+	@Test (expected = TeamException.class)
+	public void testSpaceForName() throws TeamException{
+		SoccerTeam NewTeam = new SoccerTeam(" ", " ");	
+	}
 
 	@Test
     public void GetNametest() { 
