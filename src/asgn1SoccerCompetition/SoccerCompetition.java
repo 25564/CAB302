@@ -53,7 +53,7 @@ public class SoccerCompetition implements SportsCompetition{
 	 *  or equal to or greater than the number of leagues in the competition.
 	 */
 	public SoccerLeague getLeague(int leagueNum) throws CompetitionException{
-		if (this.LeagueList.size() - 1 < leagueNum) {
+		if (this.LeagueList.size() - 1 < leagueNum || leagueNum < 0) {
 			throw new CompetitionException("Cannot Retrieve non existant League");
 		}
 		

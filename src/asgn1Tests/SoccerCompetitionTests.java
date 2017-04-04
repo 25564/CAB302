@@ -54,6 +54,12 @@ public class SoccerCompetitionTests {
 		Competition.getLeague(1);
 	}
 	
+	@Test(expected = CompetitionException.class)
+	public void testGetLeagueThrowExceptionOutOfScopeNegativeScope() throws CompetitionException {
+		SoccerCompetition Competition = new SoccerCompetition("League", 1, 2);
+		assertTrue(Competition.getLeague(-1) instanceof SoccerLeague);
+	}
+	
 	@Test
 	public void testStartingSeasonWithoutTeams() throws CompetitionException {
 		SoccerCompetition Competition = new SoccerCompetition("League", 3, 0);
