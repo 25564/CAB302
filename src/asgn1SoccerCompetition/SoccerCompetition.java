@@ -96,44 +96,53 @@ public class SoccerCompetition implements SportsCompetition{
 				
 		for(int i = 0; i < (this.LeagueList.size()); i++) {	
 			try {
-				if (i > 0) {
-					SoccerTeam TopTeam = this.LeagueList.get(i).getTopTeam();
-					TransitionLeagueList.get(i).add(TopTeam);
+				if (this.getLeague(i).getRegisteredNumTeams() > 0) {
+					try {
+						if (i > 0) {
+							SoccerTeam TopTeam = this.getLeague(i).getTopTeam();
+							TransitionLeagueList.get(i).add(TopTeam);
+						}
+					} catch (LeagueException e) {
+					    System.err.println("Caught League Exception while isolating top team: " + e.getMessage() + " League: " + i );
+					}
+					
+					try {
+						if (i < (this.LeagueList.size() - 1)) {
+							SoccerTeam BottomTeam = this.getLeague(i).getBottomTeam();	
+							TransitionLeagueList.get(i).add(BottomTeam);
+						}
+					} catch (LeagueException e) {
+					    System.err.println("Caught League Exception while isolating bottom team: " + e.getMessage() + " League: " + i );
+					}
 				}
-			} catch (LeagueException e) {
-			    System.err.println("Caught League Exception while isolating top team: " + e.getMessage() + " League: " + i );
-			}
-			
-			try {
-				if (i < (this.LeagueList.size() - 1)) {
-					SoccerTeam BottomTeam = this.LeagueList.get(i).getBottomTeam();	
-					TransitionLeagueList.get(i).add(BottomTeam);
-				}
-			} catch (LeagueException e) {
-			    System.err.println("Caught League Exception while isolating bottom team: " + e.getMessage() + " League: " + i );
+			} catch (CompetitionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 		
 		for(int LeagueIndex = 0; LeagueIndex < (TransitionLeagueList.size()); LeagueIndex++) {
-			try {
-				if (LeagueIndex < (this.LeagueList.size() - 1)) { // Check not last League
-
+			try {	
+				if (this.getLeague(LeagueIndex).getRegisteredNumTeams() > 0) {
 					try {
-						this.getLeague(LeagueIndex).removeTeam(TransitionLeagueList.get(LeagueIndex).get(0));
-						this.getLeague(LeagueIndex + 1).removeTeam(TransitionLeagueList.get(LeagueIndex + 1).get(0));
-
-						this.getLeague(LeagueIndex).registerTeam(TransitionLeagueList.get(LeagueIndex + 1).get(0));
-						this.getLeague(LeagueIndex + 1).registerTeam(TransitionLeagueList.get(LeagueIndex).get(0));
-					} catch (CompetitionException e) {
-					    System.err.println("Caught Competition League Exception while re-registering teams in new leagues " + e.getMessage());
+						if (LeagueIndex < (this.LeagueList.size() - 1)) { // Check not last League
+		
+							this.getLeague(LeagueIndex).removeTeam(TransitionLeagueList.get(LeagueIndex).get(0));
+							this.getLeague(LeagueIndex + 1).removeTeam(TransitionLeagueList.get(LeagueIndex + 1).get(0));
+	
+							this.getLeague(LeagueIndex).registerTeam(TransitionLeagueList.get(LeagueIndex + 1).get(0));
+							this.getLeague(LeagueIndex + 1).registerTeam(TransitionLeagueList.get(LeagueIndex).get(0));
+							
+							TransitionLeagueList.get(LeagueIndex).remove(0);
+							TransitionLeagueList.get(LeagueIndex + 1).remove(0);
+						}
+					} catch (LeagueException e) {
+					    System.err.println("Caught League Exception while re-registering teams in new leagues " + e.getMessage());
 						e.printStackTrace();
 					}
-					
-					TransitionLeagueList.get(LeagueIndex).remove(0);
-					TransitionLeagueList.get(LeagueIndex + 1).remove(0);
 				}
-			} catch (LeagueException e) {
-			    System.err.println("Caught League Exception while re-registering teams in new leagues " + e.getMessage());
+			} catch (CompetitionException e) {
+			    System.err.println("Caught Competition League Exception while re-registering teams in new leagues " + e.getMessage());
 				e.printStackTrace();
 			}
 		}
