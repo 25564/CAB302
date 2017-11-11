@@ -1,3 +1,3 @@
-# README #
+# CAB302 JAVA #
 
-Please see Blackboard for information about this assignment.
+We were given a series of interface designs and API designs and we had to implement them in Java.
